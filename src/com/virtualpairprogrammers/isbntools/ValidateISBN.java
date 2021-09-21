@@ -2,24 +2,30 @@ package com.virtualpairprogrammers.isbntools;
 
 public class ValidateISBN {
 
+    public static final int LONG_ISBN_LENGTH = 13;
+    public static final int SHORT_ISBN_LENGTH = 10;
+    public static final int LONG_ISBN_MULTIPLIER = 10;
+    public static final int SHORT_ISBN_MULTIPLIER = 11;
+
     public boolean checkISBN(String isbn) {
-        if (isbn.length() == 13) {
+        if (isbn.length() == LONG_ISBN_LENGTH) {
 
-            return isThisAValid13DigitISBN(isbn);
-        } else {
-            if (isbn.length() != 10) throw new NumberFormatException(" ISBN numbers must be 10 or 13 digits long");
+            return isThisAValidLongISBN(isbn);
 
-            return
-                    isThisAValid10DigitISBN(isbn);
+        } else if (isbn.length() == SHORT_ISBN_LENGTH) {
 
+            return isThisAValidShortISBN(isbn);
         }
+
+        throw new NumberFormatException(" ISBN numbers must be 10 or 13 digits long");
+
 
     }
 
-    public boolean isThisAValid10DigitISBN(String isbn) {
+    public boolean isThisAValidShortISBN(String isbn) {
         int total = 0;
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < SHORT_ISBN_LENGTH; i++) {
             if (!Character.isDigit(isbn.charAt(i))) {
                 if (i == 9 && isbn.charAt(i) == 'X') {
                     total += 10;
@@ -27,19 +33,19 @@ public class ValidateISBN {
                     throw new NumberFormatException("ISBN numbers can only contain numeric digits");
                 }
             } else {
-                total += Character.getNumericValue(isbn.charAt(i)) * (10 - i);
+                total += Character.getNumericValue(isbn.charAt(i)) * (SHORT_ISBN_LENGTH - i);
 //                total += isbn.charAt(i) * (10 - i);
             }
         }
 
 
-        return total % 11 == 0;
+        return total % SHORT_ISBN_MULTIPLIER == 0;
     }
 
-    private boolean isThisAValid13DigitISBN(String isbn) {
+    private boolean isThisAValidLongISBN(String isbn) {
         int total = 0;
 
-        for(int i = 0; i < 13; i++){
+        for(int i = 0; i < LONG_ISBN_LENGTH; i++){
             if(i % 2 == 0){
                 total += Character.getNumericValue(isbn.charAt(i));
             } else {
@@ -47,6 +53,6 @@ public class ValidateISBN {
             }
         }
 
-        return total % 10 == 0;
+        return total % LONG_ISBN_MULTIPLIER == 0;
     }
 }
